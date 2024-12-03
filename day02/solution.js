@@ -1,12 +1,14 @@
 const fs = require('fs')
-const data = fs.readFileSync('input2.txt', 'utf8')
+const data = fs.readFileSync('input.txt', 'utf8')
 const list = data.split('\n').map((l) => l.split(' '))
+const recursive = process.env.part === 'part2'
 
 const res = list.reduce((acc, curr, index) => {
   if (!curr[0]) {
     return acc
   }
-  const correct = loopArray(curr, curr, 0, index)
+
+  const correct = loopArray(curr, curr, 0, recursive)
 
   if (correct) {
     acc += 1
@@ -15,7 +17,7 @@ const res = list.reduce((acc, curr, index) => {
   return acc
 }, 0)
 
-function loopArray(array, newArray, index = 0, i) {
+function loopArray(array, newArray, index = 0, recursive = true) {
   let prev
   let direction
   let correct = true
@@ -52,9 +54,10 @@ function loopArray(array, newArray, index = 0, i) {
 
   if (correct) {
     return correct
-  } else if (index === array.length) {
+  } else if (index === array.length || !recursive) {
     return false
   }
+
   return loopArray(
     array,
     array.filter((_, ii) => ii !== index),
